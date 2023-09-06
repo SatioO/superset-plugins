@@ -17,13 +17,14 @@
  * under the License.
  */
 import { QueryFormColumn, QueryFormData } from '@superset-ui/core';
+import { DEFAULT_LEGEND_FORM_DATA } from '../../constants';
 import {
   BaseChartProps,
   BaseTransformedProps,
-  ContextMenuTransformedProps,
-  CrossFilterTransformedProps,
   LegendFormData,
-} from '../types';
+  LegendOrientation,
+  LegendType,
+} from '../../types';
 
 export type ExtPieChartFormData = QueryFormData &
   LegendFormData & {
@@ -57,7 +58,24 @@ export interface ExtPieChartProps extends BaseChartProps<ExtPieChartFormData> {
   formData: ExtPieChartFormData;
 }
 
+export const DEFAULT_FORM_DATA: ExtPieChartFormData = {
+  ...DEFAULT_LEGEND_FORM_DATA,
+  donut: false,
+  groupby: [],
+  innerRadius: 30,
+  labelLine: false,
+  labelType: ExtPieChartLabelType.Key,
+  legendOrientation: LegendOrientation.Top,
+  legendType: LegendType.Scroll,
+  numberFormat: 'SMART_NUMBER',
+  outerRadius: 70,
+  showLabels: true,
+  labelsOutside: true,
+  showLabelsThreshold: 5,
+  dateFormat: 'smart_date',
+  datasource: '',
+  viz_type: '',
+};
+
 export type ExtPieChartTransformedProps =
-  BaseTransformedProps<ExtPieChartFormData> &
-    ContextMenuTransformedProps &
-    CrossFilterTransformedProps;
+  BaseTransformedProps<ExtPieChartFormData>;

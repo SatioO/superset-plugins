@@ -1,7 +1,7 @@
 import { styled } from '@superset-ui/core';
 import { default as ReactEcharts } from 'echarts-for-react';
 import React from 'react';
-import { EchartsProps, EchartsStylesProps } from '../packages/types';
+import { EchartsProps, EchartsStylesProps } from '../types';
 
 const Styles = styled.div<EchartsStylesProps>`
   height: ${({ height }) => height};

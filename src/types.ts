@@ -18,53 +18,23 @@
  */
 import {
   ChartDataResponseResult,
-  ChartMetadata,
-  ChartPlugin,
   ChartProps,
-  HandlerFunction,
   PlainObject,
-  SetDataMaskHook,
-  SqlaFormData,
+  SupersetThemeProps,
 } from '@superset-ui/core';
-import { ECharts, EChartsCoreOption } from 'echarts';
-import { TooltipMarker } from 'echarts/types/src/util/format';
-import React, { RefObject } from 'react';
+import { EChartsCoreOption } from 'echarts';
 
 export type EchartsStylesProps = {
   height: number;
   width: number;
 };
 
-export type Refs = {
-  echartRef?: React.Ref<EchartsHandler>;
-  divRef?: RefObject<HTMLDivElement>;
-};
-
 export interface EchartsProps {
   height: number;
   width: number;
   echartOptions: EChartsCoreOption;
-  eventHandlers?: EventHandlers;
-  zrEventHandlers?: EventHandlers;
   selectedValues?: Record<number, string>;
-  forceClear?: boolean;
 }
-
-export interface EchartsHandler {
-  getEchartInstance: () => ECharts | undefined;
-}
-
-export enum ForecastSeriesEnum {
-  Observation = '',
-  ForecastTrend = '__yhat',
-  ForecastUpper = '__yhat_upper',
-  ForecastLower = '__yhat_lower',
-}
-
-export type ForecastSeriesContext = {
-  name: string;
-  type: ForecastSeriesEnum;
-};
 
 export enum LegendOrientation {
   Top = 'top',
@@ -78,22 +48,12 @@ export enum LegendType {
   Plain = 'plain',
 }
 
-export type ForecastValue = {
-  marker: TooltipMarker;
-  observation?: number;
-  forecastTrend?: number;
-  forecastLower?: number;
-  forecastUpper?: number;
-};
-
 export type LegendFormData = {
   legendMargin: number | null | string;
   legendOrientation: LegendOrientation;
   legendType: LegendType;
   showLegend: boolean;
 };
-
-export type EventHandlers = Record<string, { (props: any): void }>;
 
 export enum LabelPositionEnum {
   Top = 'top',
@@ -113,6 +73,7 @@ export enum LabelPositionEnum {
 
 export interface BaseChartProps<T extends PlainObject> extends ChartProps<T> {
   queriesData: ChartDataResponseResult[];
+  theme: SupersetThemeProps;
 }
 
 export interface BaseTransformedProps<F> {
@@ -122,42 +83,10 @@ export interface BaseTransformedProps<F> {
   width: number;
 }
 
-export type CrossFilterTransformedProps = {
-  setControlValue?: HandlerFunction;
-  emitCrossFilters?: boolean;
-};
-
-export type ContextMenuTransformedProps = {
-  onContextMenu?: (clientX: number, clientY: number, filters?: any) => void;
-  setDataMask?: SetDataMaskHook;
-};
-
 export interface TitleFormData {
   xAxisTitle: string;
   xAxisTitleMargin: number;
   yAxisTitle: string;
   yAxisTitleMargin: number;
   yAxisTitlePosition: string;
-}
-
-export interface TreePathInfo {
-  name: string;
-  dataIndex: number;
-  value: number | number[];
-}
-
-export class EchartsChartPlugin<
-  T extends SqlaFormData = SqlaFormData,
-  P extends ChartProps = ChartProps
-> extends ChartPlugin<T, P> {
-  constructor(props: any) {
-    const { metadata, ...restProps } = props;
-    super({
-      ...restProps,
-      metadata: new ChartMetadata({
-        parseMethod: 'json',
-        ...metadata,
-      }),
-    });
-  }
 }
