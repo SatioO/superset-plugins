@@ -20,7 +20,7 @@ import {
   ChartDataResponseResult,
   ChartProps,
   PlainObject,
-  SupersetThemeProps,
+  SupersetTheme,
 } from '@superset-ui/core';
 import { EChartsCoreOption } from 'echarts';
 
@@ -71,9 +71,18 @@ export enum LabelPositionEnum {
   InsideBottomRight = 'insideBottomRight',
 }
 
+export enum EchartsPieLabelType {
+  Key = 'key',
+  Value = 'value',
+  Percent = 'percent',
+  KeyValue = 'key_value',
+  KeyPercent = 'key_percent',
+  KeyValuePercent = 'key_value_percent',
+}
+
 export interface BaseChartProps<T extends PlainObject> extends ChartProps<T> {
   queriesData: ChartDataResponseResult[];
-  theme: SupersetThemeProps;
+  theme: SupersetTheme;
 }
 
 export interface BaseTransformedProps<F> {

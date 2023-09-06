@@ -27,17 +27,10 @@ export default function transformProps(
     innerRadius,
     labelsOutside,
     labelLine,
-    labelType,
-    legendMargin,
-    legendOrientation,
-    legendType,
     metric = '',
-    numberFormat,
     dateFormat,
     outerRadius,
     showLabels,
-    showLegend,
-    showLabelsThreshold,
   } = {
     ...DEFAULT_LEGEND_FORM_DATA,
     ...DEFAULT_FORM_DATA,
@@ -50,16 +43,8 @@ export default function transformProps(
 
   const defaultLabel = {
     show: showLabels,
+    color: theme.colors.grayscale.dark2,
   };
-
-  // const keys = data.map((datum) =>
-  //   extractGroupbyLabel({
-  //     datum,
-  //     groupby: groupbyLabels,
-  //     coltypeMapping,
-  //     timeFormatter: getTimeFormatter(dateFormat),
-  //   })
-  // );
 
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
 
@@ -115,7 +100,13 @@ export default function transformProps(
     },
   ];
 
-  const echartOptions: EChartsCoreOption = { series };
+  const echartOptions: EChartsCoreOption = {
+    tooltip: {
+      show: true,
+      trigger: 'item',
+    },
+    series,
+  };
 
   return {
     width,

@@ -16,85 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ControlPanelConfig, sections } from '@superset-ui/chart-controls';
+import {
+  ControlPanelConfig,
+  ControlPanelsContainerProps,
+  sections,
+} from '@superset-ui/chart-controls';
 import { t } from '@superset-ui/core';
+import { DEFAULT_FORM_DATA } from '../types';
+const { showLabels, labelType, labelsOutside, labelLine, donut, innerRadius } =
+  DEFAULT_FORM_DATA;
 
 const config: ControlPanelConfig = {
-  /**
-   * The control panel is split into two tabs: "Query" and
-   * "Chart Options". The controls that define the inputs to
-   * the chart data request, such as columns and metrics, usually
-   * reside within "Query", while controls that affect the visual
-   * appearance or functionality of the chart are under the
-   * "Chart Options" section.
-   *
-   * There are several predefined controls that can be used.
-   * Some examples:
-   * - groupby: columns to group by (translated to GROUP BY statement)
-   * - series: same as groupby, but single selection.
-   * - metrics: multiple metrics (translated to aggregate expression)
-   * - metric: sane as metrics, but single selection
-   * - adhoc_filters: filters (translated to WHERE or HAVING
-   *   depending on filter type)
-   * - row_limit: maximum number of rows (translated to LIMIT statement)
-   *
-   * If a control panel has both a `series` and `groupby` control, and
-   * the user has chosen `col1` as the value for the `series` control,
-   * and `col2` and `col3` as values for the `groupby` control,
-   * the resulting query will contain three `groupby` columns. This is because
-   * we considered `series` control a `groupby` query field and its value
-   * will automatically append the `groupby` field when the query is generated.
-   *
-   * It is also possible to define custom controls by importing the
-   * necessary dependencies and overriding the default parameters, which
-   * can then be placed in the `controlSetRows` section
-   * of the `Query` section instead of a predefined control.
-   *
-   * import { validateNonEmpty } from '@superset-ui/core';
-   * import {
-   *   sharedControls,
-   *   ControlConfig,
-   *   ControlPanelConfig,
-   * } from '@superset-ui/chart-controls';
-   *
-   * const myControl: ControlConfig<'SelectControl'> = {
-   *   name: 'secondary_entity',
-   *   config: {
-   *     ...sharedControls.entity,
-   *     type: 'SelectControl',
-   *     label: t('Secondary Entity'),
-   *     mapStateToProps: state => ({
-   *       sharedControls.columnChoices(state.datasource)
-   *       .columns.filter(c => c.groupby)
-   *     })
-   *     validators: [validateNonEmpty],
-   *   },
-   * }
-   *
-   * In addition to the basic drop down control, there are several predefined
-   * control types (can be set via the `type` property) that can be used. Some
-   * commonly used examples:
-   * - SelectControl: Dropdown to select single or multiple values,
-       usually columns
-   * - MetricsControl: Dropdown to select metrics, triggering a modal
-       to define Metric details
-   * - AdhocFilterControl: Control to choose filters
-   * - CheckboxControl: A checkbox for choosing true/false values
-   * - SliderControl: A slider with min/max values
-   * - TextControl: Control for text data
-   *
-   * For more control input types, check out the `incubator-superset` repo
-   * and open this file: superset-frontend/src/explore/components/controls/index.js
-   *
-   * To ensure all controls have been filled out correctly, the following
-   * validators are provided
-   * by the `@superset-ui/core/lib/validator`:
-   * - validateNonEmpty: must have at least one value
-   * - validateInteger: must be an integer value
-   * - validateNumber: must be an integer or decimal value
-   */
-
-  // For control input types, see: superset-frontend/src/explore/components/controls/index.js
   controlPanelSections: [
     sections.legacyRegularTime,
     {
@@ -105,7 +37,112 @@ const config: ControlPanelConfig = {
     {
       label: t('Chart Options'),
       expanded: true,
-      controlSetRows: [['color_scheme']],
+      controlSetRows: [
+        ['color_scheme'],
+        [
+          {
+            name: 'label_type',
+            config: {
+              type: 'SelectControl',
+              label: t('Label Type'),
+              default: labelType,
+              renderTrigger: true,
+              choices: [
+                ['key', t('Category Name')],
+                ['value', t('Value')],
+                ['percent', t('Percentage')],
+                ['key_value', t('Category and Value')],
+                ['key_percent', t('Category and Percentage')],
+                ['key_value_percent', t('Category, Value and Percentage')],
+              ],
+              description: t('What should be shown on the label?'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'show_labels',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Show Labels'),
+              renderTrigger: true,
+              default: showLabels,
+              description: t('Whether to display the labels.'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'labels_outside',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Put labels outside'),
+              default: labelsOutside,
+              renderTrigger: true,
+              description: t('Put the labels outside of the pie?'),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.show_labels?.value),
+            },
+          },
+        ],
+        [
+          {
+            name: 'label_line',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Label Line'),
+              default: labelLine,
+              renderTrigger: true,
+              description: t(
+                'Draw line from Pie to label when labels outside?'
+              ),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.show_labels?.value),
+            },
+          },
+        ],
+        [
+          {
+            name: 'show_total',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Show Total'),
+              default: false,
+              renderTrigger: true,
+              description: t('Whether to display the aggregate count'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'donut',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Donut'),
+              default: donut,
+              renderTrigger: true,
+              description: t('Do you want a donut or a pie?'),
+            },
+          },
+        ],
+        [
+          {
+            name: 'innerRadius',
+            config: {
+              type: 'SliderControl',
+              label: t('Inner Radius'),
+              renderTrigger: true,
+              min: 0,
+              max: 100,
+              step: 1,
+              default: innerRadius,
+              description: t('Inner radius of donut hole'),
+              visibility: ({ controls }: ControlPanelsContainerProps) =>
+                Boolean(controls?.donut?.value),
+            },
+          },
+        ],
+      ],
     },
   ],
 };

@@ -3,10 +3,13 @@ import {
   DataRecord,
   DataRecordValue,
   GenericDataType,
+  NumberFormats,
   NumberFormatter,
   TimeFormatter,
   ensureIsArray,
+  getNumberFormatter,
 } from '@superset-ui/core';
+import { format } from 'echarts';
 import { NULL_STRING } from '../constants';
 
 export const TS_REGEX = /(\d{4}-\d{2}-\d{2})[\sT](\d{2}:\d{2}:\d{2}\.?\d*).*/;
@@ -18,6 +21,14 @@ export default function normalizeTimestamp(value: string): string {
   }
   return value;
 }
+
+export function sanitizeHtml(text: string): string {
+  return format.encodeHTML(text);
+}
+
+export const percentFormatter = getNumberFormatter(
+  NumberFormats.PERCENT_2_POINT
+);
 
 export const getColtypesMapping = ({
   coltypes = [],
