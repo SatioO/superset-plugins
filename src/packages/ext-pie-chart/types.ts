@@ -16,29 +16,48 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { QueryFormColumn, QueryFormData } from '@superset-ui/core';
 import {
-  QueryFormData,
-  supersetTheme,
-  TimeseriesDataRecord,
-} from '@superset-ui/core';
+  BaseChartProps,
+  BaseTransformedProps,
+  ContextMenuTransformedProps,
+  CrossFilterTransformedProps,
+  LegendFormData,
+} from '../types';
 
-export interface ExtPieChartStylesProps {
-  height: number;
-  width: number;
-  headerFontSize: keyof typeof supersetTheme.typography.sizes;
-  boldText: boolean;
-}
-
-interface ExtPieChartCustomizeProps {
-  headerText: string;
-}
-
-export type ExtPieChartQueryFormData = QueryFormData &
-  ExtPieChartStylesProps &
-  ExtPieChartCustomizeProps;
-
-export type ExtPieChartProps = ExtPieChartStylesProps &
-  ExtPieChartCustomizeProps & {
-    data: TimeseriesDataRecord[];
-    // add typing here for the props you pass in from transformProps.ts!
+export type ExtPieChartFormData = QueryFormData &
+  LegendFormData & {
+    colorScheme?: string;
+    currentOwnValue?: string[] | null;
+    donut: boolean;
+    defaultValue?: string[] | null;
+    groupby: QueryFormColumn[];
+    innerRadius: number;
+    labelLine: boolean;
+    labelType: ExtPieChartLabelType;
+    labelsOutside: boolean;
+    metric?: string;
+    outerRadius: number;
+    showLabels: boolean;
+    numberFormat: string;
+    dateFormat: string;
+    showLabelsThreshold: number;
   };
+
+export enum ExtPieChartLabelType {
+  Key = 'key',
+  Value = 'value',
+  Percent = 'percent',
+  KeyValue = 'key_value',
+  KeyPercent = 'key_percent',
+  KeyValuePercent = 'key_value_percent',
+}
+
+export interface ExtPieChartProps extends BaseChartProps<ExtPieChartFormData> {
+  formData: ExtPieChartFormData;
+}
+
+export type ExtPieChartTransformedProps =
+  BaseTransformedProps<ExtPieChartFormData> &
+    ContextMenuTransformedProps &
+    CrossFilterTransformedProps;

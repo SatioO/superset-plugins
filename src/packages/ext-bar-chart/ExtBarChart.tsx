@@ -16,39 +16,70 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { styled } from '@superset-ui/core';
 import React, { createRef, useEffect } from 'react';
-import { ExtBarChartProps, ExtBarChartStylesProps } from './types';
-
+import Echart from '../../components/Echart';
+import { ExtBarChartProps } from './types';
 // The following Styles component is a <div> element, which has been styled using Emotion
 // For docs, visit https://emotion.sh/docs/styled
 
 // Theming variables are provided for your use via a ThemeProvider
 // imported from @superset-ui/core. For variables available, please visit
 // https://github.com/apache-superset/superset-ui/blob/master/packages/superset-ui-core/src/style/index.ts
-
-const Styles = styled.div<ExtBarChartStylesProps>`
-  background-color: ${({ theme }) => theme.colors.secondary.light2};
-  padding: ${({ theme }) => theme.gridUnit * 4}px;
-  border-radius: ${({ theme }) => theme.gridUnit * 2}px;
-  height: ${({ height }) => height}px;
-  width: ${({ width }) => width}px;
-
-  h3 {
-    /* You can use your props to control CSS! */
-    margin-top: 0;
-    margin-bottom: ${({ theme }) => theme.gridUnit * 3}px;
-    font-size: ${({ theme, headerFontSize }) =>
-      theme.typography.sizes[headerFontSize]}px;
-    font-weight: ${({ theme, boldText }) =>
-      theme.typography.weights[boldText ? 'bold' : 'normal']};
-  }
-
-  pre {
-    height: ${({ theme, headerFontSize, height }) =>
-      height - theme.gridUnit * 12 - theme.typography.sizes[headerFontSize]}px;
-  }
-`;
+const option = {
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: {
+      type: 'shadow',
+    },
+  },
+  legend: {},
+  grid: {
+    left: '3%',
+    right: '4%',
+    bottom: '3%',
+    containLabel: true,
+  },
+  xAxis: [
+    {
+      type: 'category',
+      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    },
+  ],
+  yAxis: [
+    {
+      type: 'value',
+    },
+  ],
+  series: [
+    {
+      name: 'Email',
+      type: 'bar',
+      stack: 'a',
+      emphasis: {
+        focus: 'series',
+      },
+      data: [120, 132, 101, 134, 90, 230, 210],
+    },
+    {
+      name: 'Union Ads',
+      type: 'bar',
+      stack: 'a',
+      emphasis: {
+        focus: 'series',
+      },
+      data: [220, 182, 191, 234, 290, 330, 310],
+    },
+    {
+      name: 'Video Ads',
+      type: 'bar',
+      stack: 'a',
+      emphasis: {
+        focus: 'series',
+      },
+      data: [150, 232, 201, 154, 190, 330, 410],
+    },
+  ],
+};
 
 /**
  * ******************* WHAT YOU CAN BUILD HERE *******************
@@ -74,16 +105,5 @@ export default function ExtBarChart(props: ExtBarChartProps) {
 
   console.log('Plugin props', props);
 
-  return (
-    <Styles
-      ref={rootElem}
-      boldText={props.boldText}
-      headerFontSize={props.headerFontSize}
-      height={height}
-      width={width}
-    >
-      <h3>{props.headerText}</h3>
-      <pre>${JSON.stringify(data, null, 2)}</pre>
-    </Styles>
-  );
+  return <Echart height={height} width={width} echartOptions={option} />;
 }

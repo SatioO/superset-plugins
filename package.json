@@ -21,12 +21,15 @@
     "ts-types": "tsc --build",
     "test": "jest"
   },
-  "author": "My Name",
+  "author": "Vaibhav Satam",
   "license": "Apache-2.0",
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {},
+  "dependencies": {
+    "echarts": "^5.4.3",
+    "echarts-for-react": "^3.0.2"
+  },
   "peerDependencies": {
     "@airbnb/config-babel": "^2.0.1",
     "@superset-ui/chart-controls": "*",
