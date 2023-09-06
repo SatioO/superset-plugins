@@ -22,6 +22,7 @@ import {
   sections,
 } from '@superset-ui/chart-controls';
 import { t } from '@superset-ui/core';
+import { legendSection } from '../../../controls';
 import { DEFAULT_FORM_DATA } from '../types';
 const { showLabels, labelType, labelsOutside, labelLine, donut, innerRadius } =
   DEFAULT_FORM_DATA;
@@ -39,6 +40,7 @@ const config: ControlPanelConfig = {
       expanded: true,
       controlSetRows: [
         ['color_scheme'],
+        ...legendSection,
         [
           {
             name: 'label_type',

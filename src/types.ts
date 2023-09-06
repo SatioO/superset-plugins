@@ -48,6 +48,10 @@ export enum LegendType {
   Plain = 'plain',
 }
 
+export interface LegendState {
+  [key: string]: boolean;
+}
+
 export type LegendFormData = {
   legendMargin: number | null | string;
   legendOrientation: LegendOrientation;

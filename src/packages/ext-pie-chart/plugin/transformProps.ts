@@ -5,11 +5,18 @@ import {
   getTimeFormatter,
 } from '@superset-ui/core';
 import { EChartsCoreOption, PieSeriesOption } from 'echarts';
+import { CallbackDataParams } from 'echarts/types/src/util/types.d';
 import { DEFAULT_LEGEND_FORM_DATA, OpacityEnum } from '../../../constants';
 import { convertInteger } from '../../../utils/convertInteger';
-import { extractGroupbyLabel, getColtypesMapping } from '../../../utils/series';
+import {
+  extractGroupbyLabel,
+  getColtypesMapping,
+  getLegendProps,
+  sanitizeHtml,
+} from '../../../utils/series';
 import {
   DEFAULT_FORM_DATA,
+  ExtPieChartLabelType,
   ExtPieChartProps,
   ExtPieChartTransformedProps,
 } from '../types';
@@ -17,8 +24,7 @@ import {
 export default function transformProps(
   chartProps: ExtPieChartProps
 ): ExtPieChartTransformedProps {
-  const { width, height, formData, queriesData, filterState, theme } =
-    chartProps;
+  const { width, height, formData, queriesData, theme } = chartProps;
   const { data = [] } = queriesData[0];
   const {
     colorScheme,
@@ -31,6 +37,10 @@ export default function transformProps(
     dateFormat,
     outerRadius,
     showLabels,
+    labelType,
+    legendType,
+    legendOrientation,
+    showLegend,
   } = {
     ...DEFAULT_LEGEND_FORM_DATA,
     ...DEFAULT_FORM_DATA,
@@ -41,11 +51,26 @@ export default function transformProps(
   const groupbyLabels = groupby.map(getColumnLabel);
   const coltypeMapping = getColtypesMapping(queriesData[0]);
 
+  const keys = data.map((datum) =>
+    extractGroupbyLabel({
+      datum,
+      groupby: groupbyLabels,
+      coltypeMapping,
+      timeFormatter: getTimeFormatter(dateFormat),
+    })
+  );
+
+  const formatter = (params: CallbackDataParams) =>
+    formatPieLabel({
+      params,
+      labelType,
+    });
+
   const defaultLabel = {
+    formatter,
     show: showLabels,
     color: theme.colors.grayscale.dark2,
   };
-
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
 
   let totalValue = 0;
@@ -57,8 +82,6 @@ export default function transformProps(
       timeFormatter: getTimeFormatter(dateFormat),
     });
 
-    const isFiltered =
-      filterState.selectedValues && !filterState.selectedValues.includes(name);
     const value = datum[metricLabel];
 
     if (typeof value === 'number' || typeof value === 'string') {
@@ -70,13 +93,10 @@ export default function transformProps(
       name,
       itemStyle: {
         color: colorFn(name),
-        opacity: isFiltered
-          ? OpacityEnum.SemiTransparent
-          : OpacityEnum.NonTransparent,
+        opacity: OpacityEnum.NonTransparent,
       },
     };
   });
-
   const series: PieSeriesOption[] = [
     {
       type: 'pie',
@@ -99,8 +119,14 @@ export default function transformProps(
       data: transformedData,
     },
   ];
-
   const echartOptions: EChartsCoreOption = {
+    grid: {
+      containLabel: true,
+    },
+    legend: {
+      ...getLegendProps(legendType, legendOrientation, showLegend, theme),
+      data: keys,
+    },
     tooltip: {
       show: true,
       trigger: 'item',
@@ -114,4 +140,34 @@ export default function transformProps(
     formData,
     echartOptions,
   };
+}
+
+export function formatPieLabel({
+  params,
+  labelType,
+  sanitizeName = false,
+}: {
+  params: Pick<CallbackDataParams, 'name' | 'value' | 'percent'>;
+  labelType: ExtPieChartLabelType;
+  sanitizeName?: boolean;
+}): string {
+  const { name: rawName = '', value } = params;
+  const name = sanitizeName ? sanitizeHtml(rawName) : rawName;
+
+  switch (labelType) {
+    case ExtPieChartLabelType.Key:
+      return name;
+    case ExtPieChartLabelType.Value:
+      return value.toString();
+    case ExtPieChartLabelType.Percent:
+      return value.toString();
+    case ExtPieChartLabelType.KeyValue:
+      return `${name}: ${value}`;
+    case ExtPieChartLabelType.KeyValuePercent:
+      return `${name}: ${value} (${value.toString()})`;
+    case ExtPieChartLabelType.KeyPercent:
+      return `${name}: ${value.toString()}`;
+    default:
+      return name;
+  }
 }
