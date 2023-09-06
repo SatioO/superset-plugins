@@ -7,7 +7,6 @@ import {
 import { EChartsCoreOption, PieSeriesOption } from 'echarts';
 import { CallbackDataParams } from 'echarts/types/src/util/types.d';
 import { DEFAULT_LEGEND_FORM_DATA, OpacityEnum } from '../../../constants';
-import { convertInteger } from '../../../utils/convertInteger';
 import {
   extractGroupbyLabel,
   getColtypesMapping,
@@ -73,7 +72,6 @@ export default function transformProps(
   };
   const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
 
-  let totalValue = 0;
   const transformedData: PieSeriesOption[] = data.map((datum) => {
     const name = extractGroupbyLabel({
       datum,
@@ -83,10 +81,6 @@ export default function transformProps(
     });
 
     const value = datum[metricLabel];
-
-    if (typeof value === 'number' || typeof value === 'string') {
-      totalValue += convertInteger(value);
-    }
 
     return {
       value,

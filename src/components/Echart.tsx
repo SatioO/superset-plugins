@@ -9,9 +9,21 @@ const Styles = styled.div<EchartsStylesProps>`
 `;
 
 function Echart({ width, height, echartOptions }: EchartsProps) {
+  const onChartClick = (params: any) => {
+    console.log('Chart clicked', params);
+  };
+
+  const onEvents = {
+    click: onChartClick,
+  };
+
   return (
     <Styles height={height} width={width}>
-      <ReactEcharts style={{ height, width }} option={echartOptions} />
+      <ReactEcharts
+        style={{ height, width }}
+        option={echartOptions}
+        onEvents={onEvents}
+      />
     </Styles>
   );
 }
