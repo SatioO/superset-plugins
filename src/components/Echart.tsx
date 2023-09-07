@@ -10,7 +10,10 @@ const Styles = styled.div<EchartsStylesProps>`
 
 function Echart({ width, height, echartOptions }: EchartsProps) {
   const onChartClick = (params: any) => {
-    console.log('Chart clicked', params);
+    window.parent.postMessage(
+      { type: 'ext-pie-chart', message: params.data },
+      '*'
+    );
   };
 
   const onEvents = {

@@ -20,7 +20,6 @@ import {
   ChartDataResponseResult,
   ChartProps,
   PlainObject,
-  SupersetTheme,
 } from '@superset-ui/core';
 import { EChartsCoreOption } from 'echarts';
 
@@ -33,7 +32,6 @@ export interface EchartsProps {
   height: number;
   width: number;
   echartOptions: EChartsCoreOption;
-  selectedValues?: Record<number, string>;
 }
 
 export enum LegendOrientation {
@@ -86,7 +84,6 @@ export enum EchartsPieLabelType {
 
 export interface BaseChartProps<T extends PlainObject> extends ChartProps<T> {
   queriesData: ChartDataResponseResult[];
-  theme: SupersetTheme;
 }
 
 export interface BaseTransformedProps<F> {
