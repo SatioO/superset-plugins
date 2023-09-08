@@ -1,53 +1,90 @@
-import { EChartsCoreOption } from 'echarts';
-import { ExtPieChartProps, ExtPieTransformProps } from '../types';
+import {
+  CategoricalColorNamespace,
+  getColumnLabel,
+  getMetricLabel,
+} from '@superset-ui/core';
+import { EChartsCoreOption, PieSeriesOption } from 'echarts';
+import { extractGroupbyLabel, getColtypesMapping } from '../../../utils/series';
+import { DEFAULT_PIE_FORM_DATA } from '../constants';
+import {
+  ExtPieChartFormData,
+  ExtPieChartProps,
+  ExtPieTransformProps,
+} from '../types';
 
 export default function transformProps(
   chartProps: ExtPieChartProps
 ): ExtPieTransformProps {
-  const { width, height, formData } = chartProps;
+  const { width, height, formData, queriesData, theme } = chartProps;
+  const {
+    title,
+    colorScheme,
+    animation,
+    groupby,
+    metric,
+    donut,
+    innerRadius,
+    outerRadius,
+  }: ExtPieChartFormData = {
+    ...DEFAULT_PIE_FORM_DATA,
+    ...formData,
+  };
+  const { data = [] } = queriesData[0];
+
+  const metricLabel = getMetricLabel(metric);
+  const groupbyLabels = groupby.map(getColumnLabel);
+  const coltypeMapping = getColtypesMapping(queriesData[0]);
+  const colorFn = CategoricalColorNamespace.getScale(colorScheme as string);
+
+  const transformedData: PieSeriesOption[] = data.map((datum) => {
+    const name = extractGroupbyLabel({
+      datum,
+      groupby: groupbyLabels,
+      coltypeMapping,
+    });
+
+    return {
+      value: datum[metricLabel],
+      name,
+      itemStyle: {
+        color: colorFn(name),
+      },
+    };
+  });
+
+  const series: PieSeriesOption[] = [
+    {
+      name: title,
+      type: 'pie',
+      animation,
+      radius: [`${donut ? innerRadius : 0}%`, `${outerRadius}%`],
+      center: ['50%', '50%'],
+      avoidLabelOverlap: true,
+      itemStyle: {
+        borderRadius: 10,
+        borderColor: '#fff',
+        borderWidth: 2,
+      },
+      emphasis: {
+        label: {
+          show: true,
+          fontWeight: 'bold',
+          backgroundColor: theme.colors.grayscale.light5,
+        },
+      },
+      data: transformedData,
+    },
+  ];
 
   const echartOptions: EChartsCoreOption = {
     tooltip: {
       trigger: 'item',
     },
     legend: {
-      top: '5%',
-      left: 'center',
+      type: 'scroll',
+      orient: 'horizontal',
     },
-    series: [
-      {
-        name: 'Access From',
-        type: 'pie',
-        radius: ['40%', '70%'],
-        avoidLabelOverlap: false,
-        itemStyle: {
-          borderRadius: 10,
-          borderColor: '#fff',
-          borderWidth: 2,
-        },
-        label: {
-          show: false,
-          position: 'center',
-        },
-        emphasis: {
-          label: {
-            show: true,
-            fontSize: 36,
-            fontWeight: 'bold',
-          },
-        },
-        labelLine: {
-          show: false,
-        },
-        data: [
-          { value: 1048, name: 'Search Engine' },
-          { value: 735, name: 'Direct' },
-          { value: 580, name: 'Email' },
-          { value: 484, name: 'Union Ads' },
-          { value: 300, name: 'Video Ads' },
-        ],
-      },
-    ],
+    series,
   };
 
   return {
@@ -55,5 +92,6 @@ export default function transformProps(
     height,
     echartOptions,
     formData,
+    theme,
   };
 }

@@ -26,6 +26,7 @@ function Echart({ width, height, echartOptions }: EchartsProps) {
         style={{ height, width }}
         option={echartOptions}
         onEvents={onEvents}
+        opts={{ renderer: 'svg' }}
       />
     </Styles>
   );

@@ -17,7 +17,6 @@
  * under the License.
  */
 // eslint-disable-next-line import/prefer-default-export
-export { default as ExtBarChart } from './packages/ext-bar-chart/plugin';
 export { default as ExtPieChart } from './packages/ext-pie-chart/plugin';
 /**
  * Note: this file exports the default export from SupersetPlugins.tsx.
