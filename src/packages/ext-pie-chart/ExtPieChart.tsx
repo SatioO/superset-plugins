@@ -1,9 +1,9 @@
 import React from 'react';
 import Echart from '../../components/Echart';
-import { ExtPieChartProps } from './types';
+import { ExtPieTransformProps } from './types';
 
-export default function ExtPieChart(props: ExtPieChartProps) {
-  const { height, width } = props;
+export default function ExtPieChart(props: ExtPieTransformProps) {
+  const { height, width, echartOptions } = props;
 
-  return <Echart height={height} width={width} echartOptions={{}} />;
+  return <Echart height={height} width={width} echartOptions={echartOptions} />;
 }

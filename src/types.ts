@@ -17,86 +17,42 @@
  * under the License.
  */
 import {
-  ChartDataResponseResult,
+  ChartMetadata,
+  ChartPlugin,
   ChartProps,
   PlainObject,
+  SqlaFormData,
 } from '@superset-ui/core';
 import { EChartsCoreOption } from 'echarts';
+
+export interface EchartsProps extends EchartsStylesProps {
+  echartOptions: EChartsCoreOption;
+}
+
+export class EchartsChartPlugin<
+  T extends SqlaFormData = SqlaFormData,
+  P extends ChartProps = ChartProps
+> extends ChartPlugin<T, P> {
+  constructor(props: any) {
+    const { metadata, ...restProps } = props;
+    super({
+      ...restProps,
+      metadata: new ChartMetadata({
+        parseMethod: 'json',
+        ...metadata,
+      }),
+    });
+  }
+}
 
 export type EchartsStylesProps = {
   height: number;
   width: number;
 };
 
-export interface EchartsProps {
-  height: number;
-  width: number;
-  echartOptions: EChartsCoreOption;
-}
+export interface BaseChartProps<T extends PlainObject> extends ChartProps<T> {}
 
-export enum LegendOrientation {
-  Top = 'top',
-  Bottom = 'bottom',
-  Left = 'left',
-  Right = 'right',
-}
-
-export enum LegendType {
-  Scroll = 'scroll',
-  Plain = 'plain',
-}
-
-export interface LegendState {
-  [key: string]: boolean;
-}
-
-export type LegendFormData = {
-  legendMargin: number | null | string;
-  legendOrientation: LegendOrientation;
-  legendType: LegendType;
-  showLegend: boolean;
-};
-
-export enum LabelPositionEnum {
-  Top = 'top',
-  Left = 'left',
-  Right = 'right',
-  Bottom = 'bottom',
-  Inside = 'inside',
-  InsideLeft = 'insideLeft',
-  InsideRight = 'insideRight',
-  InsideTop = 'insideTop',
-  InsideBottom = 'insideBottom',
-  InsideTopLeft = 'insideTopLeft',
-  InsideBottomLeft = 'insideBottomLeft',
-  InsideTopRight = 'insideTopRight',
-  InsideBottomRight = 'insideBottomRight',
-}
-
-export enum EchartsPieLabelType {
-  Key = 'key',
-  Value = 'value',
-  Percent = 'percent',
-  KeyValue = 'key_value',
-  KeyPercent = 'key_percent',
-  KeyValuePercent = 'key_value_percent',
-}
-
-export interface BaseChartProps<T extends PlainObject> extends ChartProps<T> {
-  queriesData: ChartDataResponseResult[];
-}
-
-export interface BaseTransformedProps<F> {
+export interface BaseTransformedProps<F> extends EchartsStylesProps {
   echartOptions: EChartsCoreOption;
   formData: F;
-  height: number;
-  width: number;
-}
-
-export interface TitleFormData {
-  xAxisTitle: string;
-  xAxisTitleMargin: number;
-  yAxisTitle: string;
-  yAxisTitleMargin: number;
-  yAxisTitlePosition: string;
 }
