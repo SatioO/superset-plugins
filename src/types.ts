@@ -17,6 +17,7 @@ export type EchartsStylesProps = {
 export interface EchartsProps extends EchartsStylesProps {
   echartOptions: EChartsCoreOption;
   theme: SupersetTheme;
+  title: string;
 }
 
 export class EchartsChartPlugin<

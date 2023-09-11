@@ -8,12 +8,10 @@ const Styles = styled.div<EchartsStylesProps>`
   width: ${({ width }) => width};
 `;
 
-function Echart({ width, height, echartOptions }: EchartsProps) {
+function Echart({ width, height, echartOptions, title }: EchartsProps) {
   const onChartClick = (params: any) => {
-    window.parent.postMessage(
-      { type: 'ext-pie-chart', message: params.data },
-      '*'
-    );
+    console.log({ type: title, message: params.data });
+    window.parent.postMessage({ type: title, message: params.data }, '*');
   };
 
   const onEvents = {

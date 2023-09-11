@@ -1,5 +1,5 @@
 export const DEFAULT_PIE_FORM_DATA = {
-  title: '',
+  title: 'accion-pie-chart',
 
   // Chart Properties
   animation: true,

@@ -7,14 +7,14 @@ import { EChartsCoreOption, PieSeriesOption } from 'echarts';
 import { extractGroupbyLabel, getColtypesMapping } from '../../../utils/series';
 import { DEFAULT_PIE_FORM_DATA } from '../constants';
 import {
-  ExtPieChartFormData,
-  ExtPieChartProps,
-  ExtPieTransformProps,
+  AccionPieChartPluginFormData,
+  AccionPieChartPluginProps,
+  AccionPieChartPluginTransformProps,
 } from '../types';
 
 export default function transformProps(
-  chartProps: ExtPieChartProps
-): ExtPieTransformProps {
+  chartProps: AccionPieChartPluginProps
+): AccionPieChartPluginTransformProps {
   const { width, height, formData, queriesData, theme } = chartProps;
   const {
     title,
@@ -25,7 +25,7 @@ export default function transformProps(
     donut,
     innerRadius,
     outerRadius,
-  }: ExtPieChartFormData = {
+  }: AccionPieChartPluginFormData = {
     ...DEFAULT_PIE_FORM_DATA,
     ...formData,
   };
@@ -93,5 +93,6 @@ export default function transformProps(
     echartOptions,
     formData,
     theme,
+    title,
   };
 }
